@@ -1,11 +1,5 @@
-#!/usr/bin/python3
 
 from __future__ import print_function
-
-from MesoPy import Meso
-import MesoPy
-from datetime import datetime as dt
-from time import strftime,gmtime
 
 import numpy as np
 
@@ -18,37 +12,8 @@ from wsr88d import nwswfos
 
 import re
 import argparse
-from datetime import timedelta
+from datetime import datetime, timedelta
 import json
-
-def wind(id):
-    m = Meso() #m = Meso(token='YOUR TOKEN')
-    latest=m.latest(stid=id,within='30',units='ENGLISH')
-    ob=latest['STATION'][0]
-    try:
-        wd=int(ob['OBSERVATIONS']['wind_direction_value_1']['value'])
-        wdt=ob['OBSERVATIONS']['wind_direction_value_1']['date_time'] 
-        wdtstrp=dt.strptime(wdt, '%Y-%m-%dT%H:%M:%SZ')
-        wdtz=dt.strftime(wdtstrp,'%m-%d-%Y %H:%Mz')
-    except KeyError:
-	    wd=None
-    try:
-        ws=int(ob['OBSERVATIONS']['wind_speed_value_1']['value'])
-        wst=ob['OBSERVATIONS']['wind_speed_value_1']['date_time'] 
-        wststrp=dt.strptime(wst, '%Y-%m-%dT%H:%M:%SZ')
-        wstz=dt.strftime(wststrp,'%m-%d-%Y %H:%Mz')
-    except KeyError:
-	     ws=None
-    if wd is None or ws is None:
-        sfcw=None
-        sfcwt=None
-    else:
-        sfcw='%s/%s'%(wd,ws)
-        if wdtz==wstz:
-            sfcwt=wdtz
-        else:
-            sfcwt='wd @ %s & ws @ %s'%(wdtz,wstz)
-    return sfcw,sfcwt
 
 """
 vad.py
@@ -72,7 +37,7 @@ def parse_vector(vec_str):
 
 def parse_time(time_str):
     no_my = False
-    now = dt.utcnow()
+    now = datetime.utcnow()
     if '-' not in time_str:
         no_my = True
 
@@ -80,7 +45,7 @@ def parse_time(time_str):
         month = now.month
         time_str = "%d-%d-%s" % (year, month, time_str)
 
-    plot_time = dt.strptime(time_str, '%Y-%m-%d/%H%M')
+    plot_time = datetime.strptime(time_str, '%Y-%m-%d/%H%M')
 
     if plot_time > now:
         if no_my:
@@ -90,7 +55,7 @@ def parse_time(time_str):
             else:
                 month -= 1
             time_str = "%d-%d-%s" % (year, month, time_str)
-            plot_time = dt.strptime(time_str, '%Y-%m-%d/%H%M')
+            plot_time = datetime.strptime(time_str, '%Y-%m-%d/%H%M')
         else:
             raise ValueError("Time '%s' is in the future." % time_str)
 
@@ -126,14 +91,10 @@ def vad_plotter(radar_id, storm_motion='right-mover', sfc_wind=None, time=None, 
 
 
 def main():
-    tt=strftime('%m-%d-%Y %H:%Mz',gmtime())
-    print('Current Time: %s'%tt)
-	
     ap = argparse.ArgumentParser()
     ap.add_argument('radar_id', help="The 4-character identifier for the radar (e.g. KTLX, KFWS, etc.)")
     ap.add_argument('-m', '--storm-motion', dest='storm_motion', help="Storm motion vector. It takes one of two forms. The first is either 'BRM' for the Bunkers right mover vector, or 'BLM' for the Bunkers left mover vector. The second is the form DDD/SS, where DDD is the direction the storm is coming from, and SS is the speed in knots (e.g. 240/25).", default='right-mover')
-    ap.add_argument('-s','--sfc-id',dest='sfc_id',help='Station ID to get surface wind direction and wind speed from. Ex: krfd or KRFD')
-    #ap.add_argument('-s', '--sfc-wind', dest='sfc_wind', help="Surface wind vector. It takes the form DDD/SS, where DDD is the direction the storm is coming from, and SS is the speed in knots (e.g. 240/25).")
+    ap.add_argument('-s', '--sfc-wind', dest='sfc_wind', help="Surface wind vector. It takes the form DDD/SS, where DDD is the direction the storm is coming from, and SS is the speed in knots (e.g. 240/25).")
     ap.add_argument('-t', '--time', dest='time', help="Time to plot. Takes the form DD/HHMM, where DD is the day, HH is the hour, and MM is the minute.")
     ap.add_argument('-f', '--img-name', dest='img_name', help="Name of the file produced.")
     ap.add_argument('-p', '--local-path', dest='local_path', help="Path to local data. If not given, download from the Internet.")
@@ -143,22 +104,10 @@ def main():
 
     np.seterr(all='ignore')
 
-    id=args.sfc_id
-    if id is None:
-    	print('No surface wind being used')
-    	sfcw=None
-    else:
-        try:
-            sfcw,sfcwt=wind(id) #should check if wind data is old. 
-            print('Surface wind from %s being used: %s @ %s'%(id.upper(),sfcw,sfcwt))
-        except MesoPy.MesoPyError:
-            print('*MesoPy Error* Not using sfc wind data. Did you enter the correct station ID? ')
-            sfcw=None
-
     try:
-        vad_plotter(args.radar_id.upper(),
+        vad_plotter(args.radar_id,
             storm_motion=args.storm_motion,
-            sfc_wind=sfcw,
+            sfc_wind=args.sfc_wind,
             time=args.time,
             fname=args.img_name,
             local_path=args.local_path,
