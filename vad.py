@@ -2,7 +2,7 @@
 
 from __future__ import print_function
 
-from MesoPy import Meso
+from MesoPy import Meso #Get MesoPy here: https://github.com/mesowx/MesoPy
 import MesoPy
 from datetime import datetime as dt
 from time import strftime,gmtime
@@ -22,7 +22,7 @@ from datetime import timedelta
 import json
 
 def wind(id):
-    m = Meso() #m = Meso(token='YOUR TOKEN')
+    m=Meso(token='YOUR TOKEN') #add your MesoWest API token here. For more info, go to the MesoPy repository: https://github.com/mesowx/MesoPy
     latest=m.latest(stid=id,within='30',units='ENGLISH')
     ob=latest['STATION'][0]
     try:
