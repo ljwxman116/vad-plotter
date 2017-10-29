@@ -13,7 +13,7 @@ python vad.py RADAR_ID [ -m STORM_MOTION ] [ -s SFC_WIND ] [-id SFC_ID] [ -t TIM
 ```
 * `RADAR_ID` is a 4-character radar identifier (e.g. KTLX, KFWS)
 * `STORM_MOTION` is the storm motion vector. It can take one of two form. The first is either `BRM` for the Bunkers right-mover vector or `BLM` for the Bunkers left-mover vector. The second form is `DDD/SS`, where `DDD` is the direction the storm is coming from in degrees, and `SS` is the storm speed in knots. An example might be 240/35 (from the WSW at 35 kts).  If the argument is not specified, the default is to use the Bunkers right-mover vector.
-*`SFC_WIND` is the surface wind vector. Its form is the same as the `DDD/SS` form of the storm motion vector. A dashed red line will be drawn on the hodograph from the lowest point in the VWP to the surface wind to indicate the approximate wind profile in that layer.
+* `SFC_WIND` is the surface wind vector. Its form is the same as the `DDD/SS` form of the storm motion vector. A dashed red line will be drawn on the hodograph from the lowest point in the VWP to the surface wind to indicate the approximate wind profile in that layer.
 * `SFC_ID` is the station ID to get the surface wind vector. Ex: krfd or KRFD. 
 * `TIME` is the plot time. It takes the form `[YYYY-mm-]dd/HHMM`, where `YYYY` is the 4-digit year, `mm` is the month, `dd` is the day, `HH` is the hour, and `MM` is the minute. The year and month are optional. The script will plot the most recent VAD as of this time.
 * `IMG_NAME` is the name of the image the script produces. If not given, it defaults to `<RADAR_ID>_vad.png`.
