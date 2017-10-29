@@ -132,8 +132,8 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument('radar_id', help="The 4-character identifier for the radar (e.g. KTLX, KFWS, etc.)")
     ap.add_argument('-m', '--storm-motion', dest='storm_motion', help="Storm motion vector. It takes one of two forms. The first is either 'BRM' for the Bunkers right mover vector, or 'BLM' for the Bunkers left mover vector. The second is the form DDD/SS, where DDD is the direction the storm is coming from, and SS is the speed in knots (e.g. 240/25).", default='right-mover')
-    ap.add_argument('-s','--sfc-id',dest='sfc_id',help='Station ID to get surface wind direction and wind speed from. Ex: krfd or KRFD')
-    #ap.add_argument('-s', '--sfc-wind', dest='sfc_wind', help="Surface wind vector. It takes the form DDD/SS, where DDD is the direction the storm is coming from, and SS is the speed in knots (e.g. 240/25).")
+    ap.add_argument('-s','--sfc-id',dest='sfc_id',help='Station ID to get surface wind direction and wind speed from. Ex: krfd or KRFD') #-id?
+    #ap.add_argument('-s', '--sfc-wind', dest='sfc_wind', help="Surface wind vector. It takes the form DDD/SS, where DDD is the direction the wind is coming from, and SS is the speed in knots (e.g. 240/25).")
     ap.add_argument('-t', '--time', dest='time', help="Time to plot. Takes the form DD/HHMM, where DD is the day, HH is the hour, and MM is the minute.")
     ap.add_argument('-f', '--img-name', dest='img_name', help="Name of the file produced.")
     ap.add_argument('-p', '--local-path', dest='local_path', help="Path to local data. If not given, download from the Internet.")
